@@ -1,6 +1,7 @@
 package mx.unison.pong;
 
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 
 public class BallRunner implements Runnable {
 
@@ -54,14 +55,23 @@ public class BallRunner implements Runnable {
            // int y = (int) ball.getMaxY();
            // int x = (int)  ball.getX();
 
-            if( paddle.intersects(ball) ) {
-                directionY = directionY * SIGN;
+          //  if( paddle.intersects(ball) ) {
+       //         directionY = directionY * SIGN;
                // sX = sX * SIGN;
-                ballX = ballX + (DX * directionX) ;
-                ballY = ballY + (DY * directionY);
-                ball.x = ballX ;
+        //        ballX = ballX + (DX * directionX) ;
+          //      ballY = ballY + (DY * directionY);
+            //    ball.x = ballX ;
+             //   ball.y = ballY;
+               // continue;
+            //}
+        //Metodo que si detecta coliciones
+            if (directionY > 0 && paddle.intersects(ball)) {
+                directionY = -1;
+
+                ballY = (int) paddle.getPaddle().getMinY()
+                        - (int) ball.height;
+
                 ball.y = ballY;
-                continue;
             }
 
             if( ball.getMinY() < 0 ) {
@@ -72,7 +82,16 @@ public class BallRunner implements Runnable {
                 directionX = directionX * SIGN;
             }
             if( ball.getMaxY() > MAX_Y ) {
-                directionY = directionY * SIGN;
+                ballX = 320;
+                ballY = 240;
+
+                directionX = 1;
+                directionY = 1;
+
+                ball.x = ballX;
+                ball.y = ballY;
+
+                continue;
             }
 
             if( ball.getMaxX() > MAX_X ) {

@@ -43,4 +43,4 @@ public class Paddle {
     public boolean intersects(RectangularShape shape) {
         return paddle.intersects(shape.getBounds2D());
     }
-}
+}//

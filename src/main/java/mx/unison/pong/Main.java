@@ -23,7 +23,7 @@ public class Main {
         Board board = new Board();
         p.add(board, BorderLayout.CENTER);
 
-        f.addKeyListener( board );
+        f.addKeyListener(board);
         f.setContentPane(p);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.pack();

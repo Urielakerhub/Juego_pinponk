@@ -94,7 +94,7 @@ public class Board extends JComponent implements Runnable, KeyListener {
                 break;
             case KeyEvent.VK_RIGHT:
                 if( !isPaused) {
-                    paddle.moveRight();;
+                    paddle.moveRight();
                 }
                 break;
             case KeyEvent.VK_SPACE:

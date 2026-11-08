@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Juego_pinponk.iml" filepath="$PROJECT_DIR$/.idea/Juego_pinponk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pong_project-master/.idea/Juego_pinponk.iml" filepath="$PROJECT_DIR$/pong_project-master/.idea/Juego_pinponk.iml" />
     </modules>
   </component>
 </project>

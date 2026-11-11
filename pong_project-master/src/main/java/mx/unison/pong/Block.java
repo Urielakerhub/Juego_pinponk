@@ -1,4 +1,3 @@
-
 package mx.unison.pong;
 
 import java.awt.Color;

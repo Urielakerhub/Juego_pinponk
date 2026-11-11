@@ -1,143 +1,69 @@
-
 package mx.unison.pong;
 
 import java.awt.geom.Ellipse2D;
 
-public class BallRunner implements Runnable {
-
-    public static final int MAX_X = 640;
-    public static final int MAX_Y = 480;
+/**
+ * Controla la posición y velocidad de la pelota.
+ * El temporizador Swing de Board llama a move() en cada actualización.
+ */
+public class BallRunner {
     public static final int SIZE = 16;
 
-    private final Ellipse2D.Double ball;
-    private final Paddle paddle;
-    private final BlockManager blockManager;
+    private double x;
+    private double y;
+    private double previousX;
+    private double previousY;
+    private double velocityX = 3.4;
+    private double velocityY = -4.2;
 
-    private int ballX;
-    private int ballY;
+    private final Ellipse2D.Double bounds =
+            new Ellipse2D.Double(0, 0, SIZE, SIZE);
 
-    private int directionX = 1;
-    private int directionY = -1;
-
-    private volatile boolean isPaused = false;
-    private volatile boolean stop = false;
-
-    private int score = 0;
-
-    public BallRunner(
-            Ellipse2D.Double ball,
-            Paddle paddle,
-            BlockManager blockManager) {
-
-        this.ball = ball;
-        this.paddle = paddle;
-        this.blockManager = blockManager;
-
-        ballX = 312;
-        ballY = 350;
-
-        ball.setFrame(ballX, ballY, SIZE, SIZE);
+    public BallRunner(int startX, int startY) {
+        reset(startX, startY);
     }
 
-    public void pause() {
-        isPaused = true;
+    public void move() {
+        previousX = x;
+        previousY = y;
+        x += velocityX;
+        y += velocityY;
+        updateBounds();
     }
 
-    public void resume() {
-        isPaused = false;
+    public void reset(int startX, int startY) {
+        x = startX;
+        y = startY;
+        previousX = x;
+        previousY = y;
+        velocityX = 3.4;
+        velocityY = -4.2;
+        updateBounds();
     }
 
-    public void stop() {
-        stop = true;
+    public void bounceX() { velocityX = -velocityX; }
+    public void bounceY() { velocityY = -velocityY; }
+
+    public void bounceFromPaddle(double hitPosition) {
+        // hitPosition va de -1 (extremo izquierdo) a 1 (extremo derecho).
+        velocityX = hitPosition * 5.0;
+        velocityY = -Math.max(3.5, Math.abs(velocityY));
     }
 
-    public int getScore() {
-        return score;
+    public void setPosition(double newX, double newY) {
+        x = newX;
+        y = newY;
+        updateBounds();
     }
 
-    public synchronized void reset() {
-        ballX = 312;
-        ballY = 350;
-
-        directionX = 1;
-        directionY = -1;
-
-        ball.setFrame(ballX, ballY, SIZE, SIZE);
+    private void updateBounds() {
+        bounds.setFrame(x, y, SIZE, SIZE);
     }
 
-    @Override
-    public void run() {
-
-        while (!stop) {
-
-            if (isPaused) {
-                sleep();
-                continue;
-            }
-
-            int nextX = ballX + (20 * directionX);
-            int nextY = ballY + (20 * directionY);
-
-            // Pared izquierda
-            if (nextX <= 0) {
-                directionX = 1;
-            }
-
-            // Pared derecha
-            if (nextX + SIZE >= MAX_X) {
-                directionX = -1;
-            }
-
-            // Techo
-            if (nextY <= 0) {
-                directionY = 1;
-            }
-
-            nextX = ballX + (20 * directionX);
-            nextY = ballY + (20 * directionY);
-
-            // Colisión con la raqueta
-            Ellipse2D.Double nextBall =
-                    new Ellipse2D.Double(
-                            nextX, nextY, SIZE, SIZE);
-
-            if (directionY > 0 &&
-                    paddle.intersects(nextBall)) {
-
-                directionY = -1;
-
-                nextY = (int) paddle.getPaddle().getMinY() - SIZE;
-            }
-
-            // Colisión con bloques
-            if (CollisionManager.checkBlockCollision(
-                    nextBall, blockManager)) {
-
-                directionY *= -1;
-                score += 10;
-            }
-
-            // Actualizar posición
-            ballX = nextX;
-            ballY = nextY;
-
-            // Detectar pérdida de vida
-            if (ballY + SIZE >= MAX_Y) {
-                reset();
-            }
-
-            ball.setFrame(ballX, ballY, SIZE, SIZE);
-
-            sleep();
-        }
-    }
-
-    private void sleep() {
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            stop = true;
-        }
-    }
+    public Ellipse2D.Double getBounds() { return bounds; }
+    public double getX() { return x; }
+    public double getY() { return y; }
+    public double getPreviousX() { return previousX; }
+    public double getPreviousY() { return previousY; }
+    public double getVelocityY() { return velocityY; }
 }
